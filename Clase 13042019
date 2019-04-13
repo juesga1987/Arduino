@@ -1,0 +1,61 @@
+char tecla;
+float t = 5.5;
+float z = 3;
+float resultado = 0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  if (Serial.available() > 0)
+  {
+    tecla = Serial.read();
+    switch (tecla)
+    {
+      case 'a':
+        resultado = suma();
+        break;
+
+
+      case 'b':
+        resultado = resta();
+        break;
+
+
+      case 'c':
+        resultado = multiplica();
+        break;
+
+
+      case 'd':
+        resultado = divide();
+        break;
+
+      case 'e':
+        Serial.print("El resultado es ");
+        Serial.println(resultado);
+        break;
+    }
+
+  }
+}
+
+float suma()
+{
+  return t+z;
+}
+float resta()
+{
+  return t-z;
+}
+float multiplica()
+{
+  return t*z;
+}
+float divide()
+{
+  return t/z;
+}
+
