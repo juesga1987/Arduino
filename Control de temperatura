@@ -1,0 +1,78 @@
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+#include "DHT.h" // Codigo de libreria
+#define DHTPIN 2 // Pin al cual se conecta el sensor
+#define DHTTYPE DHT11 // Tipo de sensor
+#define RED 30
+#define BLUE 32
+#define GREEN 31
+#define VENT 5
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+DHT dht(DHTPIN, DHTTYPE);
+float h, t, f;
+
+void setup()
+{
+  Serial.begin(9600);
+  Serial.println("Prueba de temperatura");
+  pinMode(RED, OUTPUT);
+  pinMode(BLUE, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(VENT, OUTPUT);
+  digitalWrite(RED, LOW);
+  digitalWrite(GREEN, LOW);
+  digitalWrite(BLUE, LOW);
+  digitalWrite(VENT, HIGH);
+  dht.begin();
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(1, 0);
+  lcd.print("Meteorologico");
+
+}
+
+void loop()
+{
+  {
+    delay(5000);
+    h = dht.readHumidity();
+    t = dht.readTemperature();
+    f = dht.readTemperature(true);
+    if (isnan(h) || isnan(t) || isnan(f))
+    {
+      lcd.print("Error");
+      return;
+    }
+    lcd.setCursor(0, 1);
+    lcd.print("Hum:");
+    lcd.print(h);
+    lcd.setCursor(6, 1);
+    lcd.print("%");
+    lcd.print("Temp:");
+    lcd.print(t);
+    lcd.print("C");
+  }
+  {
+    if (t <= 25.5)
+    {
+      digitalWrite(BLUE, HIGH);
+      digitalWrite(RED, LOW);
+      digitalWrite(GREEN, LOW);
+      digitalWrite(VENT, HIGH);
+    }
+    if (t > 25.5 && t <= 27.5 )
+    {
+      digitalWrite(BLUE, LOW);
+      digitalWrite(GREEN, HIGH);
+      digitalWrite(RED, LOW);
+      digitalWrite(VENT, HIGH);
+    }
+    if (t > 27.5)
+    {
+      digitalWrite(BLUE, LOW);
+      digitalWrite(GREEN, LOW);
+      digitalWrite(RED, HIGH);
+      digitalWrite(VENT, LOW);
+    }
+  }
+}
