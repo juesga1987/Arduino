@@ -1,0 +1,35 @@
+#include <Servo.h> //libreria 
+
+Servo miServo;
+
+int angulo=0; //la posicion que queremos
+bool direccion = false; //False: incremeto or True: decremento 
+void setup() {
+   miServo.attach(12); //el cable datos se conecta allí
+  Serial.begin(9600); //para ver el angulo
+  miServo.write(0);
+  delay(1000);
+}
+
+void loop() {
+  if(angulo>=0 && direccion==false && angulo < 190){
+    angulo += 10; 
+    delay(200);
+    Serial.print("+");
+    Serial.println(angulo);
+  }else if(angulo >= 180 && direccion == false){
+    direccion = true;
+    Serial.print("true");
+  }else if(angulo <= 190 && direccion == true && angulo>=0){
+    angulo-=10;
+    delay(200);
+    Serial.print("-");
+    Serial.println(angulo);
+  }else if(angulo <= 0 && direccion == true){
+    direccion=false;
+    angulo = 0;
+    Serial.print("false");
+  }
+  miServo.write(angulo);
+  delay(10);
+}
