@@ -1,31 +1,24 @@
-// Librerias
-
-#include <DHT.h>
-#include <DHT_U.h>
-#include <Key.h>
-#include <Keypad.h>
+#include <DHT.h> // Sensor temperatura
+#include <DHT_U.h> // Sensor temperatura
+#include <Adafruit_Sensor.h> //Sensor temperatura
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include <Servo.h>
-#include <Keypad.h>
-
-//Definiciones
-
-// Sensor de humedad y temperatura
-
-#define DHTPIN 12
-#define DHTTYPE DHT11
-#define VENT 11 // Ventilador
-DHT dht(DHTPIN, DHTTYPE);
-float h, t, f;
-
-// LCD
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
-#define VLCD 23
+
+// Sensor temperatura 
+
+#define DHTTYPE DHT11 // Tipo de sensor
+#define DHTPIN 12
+#define VENT 11
+DHT dht(DHTPIN, DHTTYPE); 
+float h, t, f; 
 
 // KEYPAD
 
+#include <Key.h>
+#include <Keypad.h>
 const byte Filas = 4;          //KeyPad de 4 filas
 const byte Cols = 3;           //y 3 columnas
 
@@ -48,107 +41,88 @@ String passw1 = "";
 
 float inicio = 0, fin = 0;
 Servo servoMotor; // Definicion variable SERVOMOTOR
-#define VSERVO 52
-
 void setup()
 {
   Serial.begin(9600);
-  servoMotor.attach(53); // Servomotor trabaja con el PIN 9 *ANALOGO*
-  servoMotor.write(0); // Siempre comienza en 0 grados
+  servoMotor.attach(2); // Servomotor trabaja con el PIN  *ANALOGO*
   lcd.init();
   lcd.backlight();
   lcd.setCursor(6, 0);
   lcd.print("Key");
-  lcd.setCursor(0, 1);
+  lcd.setCursor(0,1);
   lcd.print("Close enter key         ");
   dht.begin();
-  pinMode(VLCD, OUTPUT);
-  digitalWrite(VLCD, HIGH);
-  pinMode(VSERVO, OUTPUT);
-  digitalWrite(VSERVO, HIGH);
-  
+  pinMode(VENT, OUTPUT);
 
 }
 
 void loop()
-
 {
 
-  // Cerradura
+// CERRADURA
 
+{
+  char pulsacion = Teclado1.getKey() ;
+
+  if ( pulsacion)
   {
-    char pulsacion = Teclado1.getKey() ;
-
-    if ( pulsacion)
-    {
-      passw1 = passw1 + pulsacion;
-      Serial.println(passw1);      // se ha pulsado ninguna tecla
-      inicio = millis();
-    }
-
-    if (passw1.length() < 7)
-    {
-      fin = millis();
-      if ((fin - inicio) >= 8000)
-      {
-        passw1 = "";
-        Serial.println("");
-      }
-    }
-    else {
-      if (passw1 == contrasenaFija )
-      {
-        Serial.println("Puedes entrar");
-        delay(1000);
-        lcd.setCursor(0, 1);
-        lcd.print("  Welcome home     ");
-        servoMotor.write(180);
-        char closedoor = '*';
-
-        while (closedoor != '#')
-        {
-          closedoor = Teclado1.getKey() ;
-        }
-        lcd.setCursor(0, 1);
-        lcd.print("Close enter key         ");
-        servoMotor.write(0);
-        passw1 = "";
-        return true;
-      }
-
-      else
-      {
-        Serial.println("Error en codigo");
-        lcd.setCursor(0, 1);
-        lcd.print("Wrong wait 5 sec      ");
-        delay(5000);
-        lcd.setCursor(0, 1);
-        lcd.print("Close enter key         ");
-        passw1 = "";
-        return false;
-      }
-    }
+    passw1 = passw1 + pulsacion;
+    Serial.println(passw1);      // se ha pulsado ninguna tecla
+    inicio = millis();
   }
 
-  // Control temperatura
+  if (passw1.length() < 7)
+  {
+    fin = millis();
+    if ((fin - inicio) >= 8000)
+    {
+      passw1 = "";
+      Serial.println("");
+    }
+  }
+  else {
+    if (passw1 == contrasenaFija )
+    {
+      Serial.println("Puedes entrar");
+      delay(1000);
+      lcd.setCursor(0,1);
+      lcd.print("  Welcome home     ");
+      servoMotor.write(180);
+      char closedoor = '*';
+
+      while (closedoor != '#')
+      {
+        closedoor = Teclado1.getKey() ;
+      }
+      lcd.setCursor(0,1);
+      lcd.print("Close enter key         ");
+      servoMotor.write(0);
+      passw1 = "";
+      return true;
+    }
+
+    else
+    {
+      Serial.println("Error en codigo");
+       lcd.setCursor(0, 1);
+      lcd.print("Wrong wait 5 sec      ");
+      delay(5000);
+      lcd.setCursor(0, 1);
+      lcd.print("Close enter key         ");
+      passw1 = "";
+      return false;
+    }
+  }
+}
+
+// CONTROL TEMPERATURA
 
   {
     {
-      delay(5000);
+      
       h = dht.readHumidity();
       t = dht.readTemperature();
       f = dht.readTemperature(true);
-      if (isnan(h) || isnan(t) || isnan(f))
-      {
-        serial.print("Error sensor")
-        return;
-      }
-      serial.print("Hum:");
-      serial.print(h);
-      serial.print("%");
-      serial.print("Temp:");
-      serial.print(t);
-      serial.print("C");
     }
     {
       if (t <= 25)
@@ -160,5 +134,5 @@ void loop()
         digitalWrite(VENT, LOW);
       }
     }
-  }
+  } 
 }
