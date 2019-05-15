@@ -1,0 +1,47 @@
+# define cocina 22
+# define sala 23
+# define cuarto 24
+char textoBT = ' ';
+
+void setup()
+{
+
+  Serial1.begin(9600);
+  pinMode(cocina, OUTPUT);
+  pinMode(sala, OUTPUT);
+  pinMode(cuarto, OUTPUT);
+
+}
+
+void loop()
+{
+
+  if (Serial1.available() > 0)
+  {
+    textoBT = Serial1.read();
+  }
+  if (textoBT == '1')
+  {
+    digitalWrite(cocina, HIGH);
+  }
+  if (textoBT == '2')
+  {
+    digitalWrite(cocina, LOW);
+  }
+  if (textoBT == '3')
+  {
+    digitalWrite(sala, HIGH);
+  }
+  if (textoBT == '4')
+  {
+    digitalWrite(sala, LOW);
+  }
+  if (textoBT == '5')
+  {
+    digitalWrite(cuarto, HIGH);
+  }
+  if (textoBT == '6')
+  {
+    digitalWrite(cuarto, LOW);
+  }
+}
