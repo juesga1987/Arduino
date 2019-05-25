@@ -1,0 +1,25 @@
+#define BUGAS 10
+const int MQ = 2;
+ 
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(BUGAS, LOW);
+}
+ 
+ 
+void loop()
+{
+  bool state= digitalRead(MQ);
+ 
+  if (state)
+  {
+    Serial.println("Deteccion");
+    digitalWrite(BUGAS, HIGH);
+  }
+  else
+  {
+    Serial.println("No detectado");
+    digitalWrite(BUGAS, LOW);
+  }
+}
