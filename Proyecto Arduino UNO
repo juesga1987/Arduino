@@ -1,0 +1,52 @@
+#include <DHT.h> // Sensor temperatura
+#include <DHT_U.h> // Sensor temperatura
+#include <Adafruit_Sensor.h> //Sensor temperatura
+
+
+// Sensor temperatura 
+
+#define DHTTYPE DHT11 // Tipo de sensor
+#define DHTPIN 11
+#define VENT 12
+DHT dht(DHTPIN, DHTTYPE); 
+float h, t, f; 
+
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(VENT, OUTPUT);
+  dht.begin();
+  pinMode(10, OUTPUT);
+  digitalWrite(10, HIGH);
+
+ 
+}
+
+void loop()
+{
+
+// CONTROL TEMPERATURA
+
+  {
+    {
+      
+      h = dht.readHumidity();
+      t = dht.readTemperature();
+      f = dht.readTemperature(true);
+      Serial.print("Temperatura: ");
+      Serial.println(t);
+      delay(2000);
+    }
+    {
+      if (t <= 27)
+      {
+        digitalWrite(VENT, HIGH);
+      }
+      if (t > 27)
+      {
+        digitalWrite(VENT, LOW);
+      }
+    }
+  }
+}
