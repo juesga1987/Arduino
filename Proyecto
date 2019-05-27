@@ -1,19 +1,9 @@
-#include <DHT.h> // Sensor temperatura
-#include <DHT_U.h> // Sensor temperatura
-#include <Adafruit_Sensor.h> //Sensor temperatura
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include <Servo.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-// Sensor temperatura 
-
-#define DHTTYPE DHT11 // Tipo de sensor
-#define DHTPIN 11
-#define VENT 12
-DHT dht(DHTPIN, DHTTYPE); 
-float h, t, f; 
 
 // KEYPAD
 
@@ -59,12 +49,10 @@ void setup()
   lcd.print("Key");
   lcd.setCursor(0,1);
   lcd.print("Close enter key         ");
-  dht.begin();
-  pinMode(VENT, OUTPUT);
 
   // Bluetooth lights
 
-   Serial1.begin(9600);
+  Serial1.begin(9600);
   pinMode(cocina, OUTPUT);
   pinMode(sala, OUTPUT);
   pinMode(cuarto, OUTPUT);
@@ -129,27 +117,6 @@ void loop()
     }
   }
 }
-
-// CONTROL TEMPERATURA
-
-  {
-    {
-      
-      h = dht.readHumidity();
-      t = dht.readTemperature();
-      f = dht.readTemperature(true);
-    }
-    {
-      if (t <= 25)
-      {
-        digitalWrite(VENT, HIGH);
-      }
-      if (t > 25)
-      {
-        digitalWrite(VENT, LOW);
-      }
-    }
-  }
 
 // BLUETOOTH LIGHTS
 
