@@ -44,9 +44,9 @@ Servo servoMotor; // Definicion variable SERVOMOTOR
 
 // Bluetooth lights
 
-# define cocina 22
-# define sala 23
-# define cuarto 24
+# define cocina 3
+# define sala 4
+# define cuarto 13
 char textoBT = ' ';
 
 void setup()
