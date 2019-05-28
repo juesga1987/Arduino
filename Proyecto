@@ -42,13 +42,15 @@ char textoBT = ' ';
 void setup()
 {
   Serial.begin(9600);
-  servoMotor.attach(2); // Servomotor trabaja con el PIN  *ANALOGO*
+  servoMotor.attach(5); // Servomotor trabaja con el PIN  *ANALOGO*
   lcd.init();
   lcd.backlight();
   lcd.setCursor(6, 0);
   lcd.print("Key");
   lcd.setCursor(0,1);
   lcd.print("Close enter key         ");
+
+  
 
   // Bluetooth lights
 
@@ -65,6 +67,7 @@ void loop()
 // CERRADURA
 
 {
+ 
   char pulsacion = Teclado1.getKey() ;
 
   if ( pulsacion)
@@ -90,7 +93,7 @@ void loop()
       delay(1000);
       lcd.setCursor(0,1);
       lcd.print("  Welcome home     ");
-      servoMotor.write(180);
+      servoMotor.write(90);
       char closedoor = '*';
 
       while (closedoor != '#')
