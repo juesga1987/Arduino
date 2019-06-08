@@ -3,34 +3,48 @@
 #include <Adafruit_Sensor.h> //Sensor temperatura
 
 
-// Sensor temperatura 
+// Sensor temperatura
 
 #define DHTTYPE DHT11 // Tipo de sensor
 #define DHTPIN 11
 #define VENT 12
-DHT dht(DHTPIN, DHTTYPE); 
-float h, t, f; 
+DHT dht(DHTPIN, DHTTYPE);
+float h, t, f;
+
+// Sensor Gas
+
+const int MQ_PIN = A4;
+const int MQ_DELAY = 2000;
+#define buzzer 4
 
 
 void setup()
 {
+
+  // Sensor temperatura
+
   Serial.begin(9600);
   pinMode(VENT, OUTPUT);
   dht.begin();
   pinMode(10, OUTPUT);
   digitalWrite(10, HIGH);
 
- 
+  // Sensor gas
+
+  pinMode(3, OUTPUT);
+  digitalWrite(3, HIGH);
+  pinMode(buzzer, OUTPUT);
+
 }
 
 void loop()
 {
 
-// CONTROL TEMPERATURA
+  // CONTROL TEMPERATURA
 
   {
     {
-      
+
       h = dht.readHumidity();
       t = dht.readTemperature();
       f = dht.readTemperature(true);
@@ -49,4 +63,26 @@ void loop()
       }
     }
   }
-}
+
+    // Sensor Gas
+
+    {
+      int raw_adc = analogRead(MQ_PIN);
+      float value_adc = raw_adc * (5.0 / 1023.0);
+
+      Serial.print("Raw:");
+      Serial.print(raw_adc);
+      Serial.print("    Tension:");
+      Serial.println(value_adc);
+      delay(MQ_DELAY);
+
+      if (value_adc >= 2)
+      {
+        digitalWrite(buzzer, HIGH);
+      }
+      else
+      {
+        digitalWrite(buzzer, LOW);
+      }
+    }
+  }
